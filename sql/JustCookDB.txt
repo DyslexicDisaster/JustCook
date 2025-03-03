@@ -1,0 +1,61 @@
+﻿DROP DATABASE IF EXISTS JustCook;
+CREATE DATABASE IF NOT EXISTS JustCook;
+
+USE JustCook;
+
+-- Drop tables if they exist 
+DROP TABLE IF EXISTS Ratings;
+DROP TABLE IF EXISTS RecipeIngredients;
+DROP TABLE IF EXISTS Ingredients;
+DROP TABLE IF EXISTS Recipes;
+DROP TABLE IF EXISTS Users;
+
+-- Users Table
+CREATE TABLE Users (
+    Id VARCHAR(255) NOT NULL,
+    UserName VARCHAR(256) NOT NULL,
+    Email VARCHAR(256) NULL,
+    PasswordHash TEXT,
+    Registration_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (Id)
+);
+
+-- Recipes Table
+CREATE TABLE Recipes (
+    RecipeId INT AUTO_INCREMENT,
+    Title VARCHAR(100) NOT NULL,
+    Description TEXT NOT NULL,
+    ImageUrl VARCHAR(2083),
+    Created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UserId VARCHAR(255) NOT NULL,
+    PRIMARY KEY (RecipeId),
+    FOREIGN KEY (UserId) REFERENCES Users(Id) ON DELETE CASCADE
+);
+
+-- Ingredients Table
+CREATE TABLE Ingredients (
+    IngredientId INT AUTO_INCREMENT,
+    Name VARCHAR(100) NOT NULL,
+    PRIMARY KEY (IngredientId)
+);
+
+-- RecipeIngredients Table
+CREATE TABLE RecipeIngredients (
+    RecipeId INT NOT NULL,
+    IngredientId INT NOT NULL,
+    Quantity VARCHAR(50),
+    PRIMARY KEY (RecipeId, IngredientId),
+    FOREIGN KEY (RecipeId) REFERENCES Recipes(RecipeId) ON DELETE CASCADE,
+    FOREIGN KEY (IngredientId) REFERENCES Ingredients(IngredientId) ON DELETE CASCADE
+);
+
+-- Ratings Table
+CREATE TABLE Ratings (
+    RatingId INT AUTO_INCREMENT,
+    RecipeId INT NOT NULL,
+    UserId VARCHAR(255) NOT NULL,
+    Value INT NOT NULL,
+    PRIMARY KEY (RatingId),
+    FOREIGN KEY (RecipeId) REFERENCES Recipes(RecipeId) ON DELETE CASCADE,
+    FOREIGN KEY (UserId) REFERENCES Users(Id) ON DELETE CASCADE
+);
